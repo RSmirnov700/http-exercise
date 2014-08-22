@@ -1,0 +1,57 @@
+listen_port: 8080
+initial_threads: 10
+max_threads: 300
+
+backends:
+    one: &one
+      name: one
+      ip: 10.10.10.5
+      url: /health/check
+      freq: 10
+      code: 200
+      uptime: 95
+
+    two: &two
+      name: two
+      ip: 10.10.10.6
+      url: /health/check
+      freq: 10
+      code: 200
+      uptime: 95
+
+    three: &three
+      name: three
+      ip: 10.10.10.7;
+      url: /health/check
+      freq: 10
+      code: 200
+      uptime: 95
+
+    four: &four
+      name: four
+      ip: 10.10.10.8
+      url: /health/check
+      freq: 10
+      code: 200
+      uptime: 95
+
+directors:
+    first: &director_one
+      name: first
+      lb_method: edu.exersises.loadbalancer.lb.strategies.RoundRobinLB
+      backends:
+          - *one
+          - *two
+    second: &director_two
+      name: second
+      lb_method: edu.exersises.loadbalancer.lb.strategies.RandomLB
+      backends:
+          - *three
+          - *four
+rules:
+    rule1:
+      url: /one-url
+      director: *director_one
+    rule2:
+      url: /another-url
+      director: *director_two
